@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Carta Secreta 4 by Myeya</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Special+Elite&display=swap');
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Special Elite', 'Courier New', monospace;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 15% 20%, rgba(168, 85, 247, 0.18), transparent 28%),
+        radial-gradient(circle at 82% 12%, rgba(192, 132, 252, 0.12), transparent 24%),
+        radial-gradient(circle at 52% 72%, rgba(88, 28, 135, 0.16), transparent 30%),
+        linear-gradient(135deg, #050407 0%, #09070d 35%, #100b17 65%, #050407 100%);
+      color: #f4ebff;
+      overflow-x: hidden;
+      position: relative;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: -20% -10% auto auto;
+      width: 32rem;
+      height: 32rem;
+      background: rgba(168, 85, 247, 0.08);
+      filter: blur(80px);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    body::after {
+      content: "";
+      position: fixed;
+      inset: auto auto -15% -12%;
+      width: 28rem;
+      height: 28rem;
+      background: rgba(168, 85, 247, 0.07);
+      filter: blur(90px);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .screen {
+      display: none;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      width: 100%;
+      text-align: center;
+      flex-direction: column;
+      padding: 20px;
+      position: relative;
+      z-index: 1;
+    }
+    .active {
+      display: flex;
+    }
+    .keypad {
+      display: grid;
+      grid-template-columns: repeat(3, 60px);
+      gap: 10px;
+      margin-top: 20px;
+      justify-content: center;
+    }
+    .key {
+      font-family: inherit;
+      width: 60px;
+      height: 60px;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 12px;
+      color: #f4ebff;
+      font-size: 20px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 12px 25px rgba(15, 23, 42, 0.25);
+      backdrop-filter: blur(8px);
+    }
+    .age-hint {
+      font-size: 8px;
+      opacity: 0.65;
+      margin: 2px 0 0;
+    }
+    .key:hover {
+      background: rgba(255,255,255,0.14);
+      transform: translateY(-3px);
+    }
+    .input-display {
+      font-size: 24px;
+      margin-top: 20px;
+      letter-spacing: 8px;
+      width: 100%;
+      text-align: center;
+    }
+    .notepad {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      padding: 22px;
+      border-radius: 22px;
+      width: 90%;
+      max-width: 500px;
+      text-align: left;
+      line-height: 1.6;
+      box-shadow: 0 20px 40px rgba(15, 23, 42, 0.38);
+      position: relative;
+      backdrop-filter: blur(10px);
+      color: #fdf5ff;
+    }
+    .notepad h3 {
+      margin-top: 0;
+      color: #f9d7ff;
+    }
+    .notepad h4 {
+      color: #f9d7ff;
+    }
+    .notepad p {
+      color: rgba(255, 255, 255, 0.94);
+    }
+    .btn-container {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 15px;
+    }
+    .btn {
+      font-family: inherit;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.22);
+      color: #f4ebff;
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 10px 20px rgba(15, 23, 42, 0.18);
+      transition: all 0.2s ease;
+      backdrop-filter: blur(6px);
+    }
+    .btn:hover {
+      background: rgba(255,255,255,0.14);
+      transform: translateY(-2px);
+    }
+    .img-page {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+    }
+    .img-page img {
+      width: 100%;
+      max-width: 400px;
+      border-radius: 15px;
+      box-shadow: 4px 4px 10px rgba(0,0,0,0.2);
+    }
+  </style>
+</head>
+<body>
+<!-- Pantalla de contraseña -->
+<div id="passwordScreen" class="screen active">
+  <h2 style="margin-bottom: 2px;">🔒 Ingresa la contraseña</h2>
+  <p class="age-hint">último año de espera</p>
+  <div class="input-display" id="inputDisplay">••••</div>
+  <div class="keypad">
+    <button class="key" onclick="enterDigit('1')">1</button>
+    <button class="key" onclick="enterDigit('2')">2</button>
+    <button class="key" onclick="enterDigit('3')">3</button>
+    <button class="key" onclick="enterDigit('4')">4</button>
+    <button class="key" onclick="enterDigit('5')">5</button>
+    <button class="key" onclick="enterDigit('6')">6</button>
+    <button class="key" onclick="enterDigit('7')">7</button>
+    <button class="key" onclick="enterDigit('8')">8</button>
+    <button class="key" onclick="enterDigit('9')">9</button>
+    <button class="key" onclick="checkPassword()">✔</button>
+    <button class="key" onclick="enterDigit('0')">0</button>
+    <button class="key" onclick="deleteLast()">⌫</button>
+  </div>
+</div>
+<div id="notepadScreen" class="screen">
+  <div class="notepad" id="page1">
+    <h3>📅 06 Octubre 2026</h3>
+    <h4>💌 Para mi niña</h4>
+    <p>Me disculpo por tardar... perdón... Cada vez más cerca y eso me alegra, un añito más se te suma... el tiempo pasa y lo que sos para mí se mantiene siempre, como mi promesa...</p>
+    <p>Unas ganas de volver a verte, tenerte cerca y abrazarte, no tengo prisa; el tiempo volverá a repetir esos momentos y continuar para siempre...</p>
+    <p>Firme a mi palabra y compromiso... disfruta y a por otro año más. Sabes que te quiero, mi niña ♡</p>
+    <p>♡ ... .- -... . ... / --.- ..- . / - . / .- -- --- / -- .. / -. .. --.-- .- ♡</p>
+    <div class="btn-container">
+      <button class="btn" onclick="goBack()">⬅ Inicio</button>
+      <button class="btn" onclick="nextPage(2)">➡ Siguiente</button>
+    </div>
+  </div>
+  <div class="notepad" id="page2" style="display:none; text-align:center;">
+    <h3>— Día 22 —</h3>
+    <blockquote style="margin: 24px 0; font-size: 1.1em;">
+      “El viento sopla más fuerte cuando más cerca estás de la cumbre de la montaña”
+    </blockquote>
+    <p style="text-align: right;">— Leland Owlsley</p>
+    <p style="font-size: 0.75em; opacity: 0.7;">Libro: <em>Memento Mori</em></p>
+    <div class="btn-container">
+      <button class="btn" onclick="prevPage(1)">⬅ Anterior</button>
+      <button class="btn" onclick="goBack()">⬅ Inicio</button>
+    </div>
+  </div>
+</div>
+<script>
+  const correctPassword = '2027';
+  let input = '';
+  function enterDigit(digit) {
+    if (input.length < 4) {
+      input += digit;
+      updateDisplay();
+    }
+  }
+  function deleteLast() {
+    input = input.slice(0, -1);
+    updateDisplay();
+  }
+  function updateDisplay() {
+    document.getElementById('inputDisplay').textContent = input.padEnd(4, '•');
+  }
+  function checkPassword() {
+    if (input.length === 4) {
+      if (input === correctPassword) {
+        document.getElementById('passwordScreen').classList.remove('active');
+        document.getElementById('notepadScreen').classList.add('active');
+        showPage(1);
+      } else {
+        alert('Contraseña incorrecta, intenta de nuevo');
+        input = '';
+        updateDisplay();
+      }
+    } else {
+      alert('Debes ingresar los 4 dígitos.');
+    }
+  }
+  function goBack() {
+    document.getElementById('notepadScreen').classList.remove('active');
+    document.getElementById('passwordScreen').classList.add('active');
+    input = '';
+    updateDisplay();
+  }
+  // Control de páginas
+  function showPage(n) {
+    const pages = document.querySelectorAll('.notepad');
+    pages.forEach(p => p.style.display = 'none');
+    document.getElementById('page' + n).style.display = 'block';
+  }
+  function nextPage(n) {
+    showPage(n);
+  }
+  function prevPage(n) {
+    showPage(n);
+  }
+</script>
+</body>
+</html>
